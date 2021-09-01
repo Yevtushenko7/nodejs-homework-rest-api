@@ -1,15 +1,66 @@
-// const fs = require('fs/promises')
+const fs = require('fs/promises');
+const path = require('path');
+const {v4: uuid } = require('uuid');
 // const contacts = require('./contacts.json')
 
-const listContacts = async () => {}
 
-const getContactById = async (contactId) => {}
+const readData = async () => {
+  const data = await fs.readFile(path.join(__dirname, 'contacts.json'), 'utf8')
+  return JSON.parse(data)
+}
 
-const removeContact = async (contactId) => {}
+const listContacts = async () => {
+  return await readData()
+}
 
-const addContact = async (body) => {}
+const getContactById = async (contactId) => {
+  const contacts = await readData();
+  const foundContact = contacts.find(({ id }) => id + '' === contactId);
+      
+  return foundContact;
+  
 
-const updateContact = async (contactId, body) => {}
+}
+
+
+const removeContact = async (contactId) => {
+  const data = await readData()
+  const newData = data.findIndex(
+   ({ id }) => id + '' === contactId)
+  
+   if (newData === -1) {
+    return null
+  }
+
+  const removedContact = await data.splice(newData, 1)
+  await fs.writeFile(path.join(__dirname, 'contacts.json'), JSON.stringify(data))
+
+  return removedContact
+  
+ }
+
+
+const addContact = async (body) => {
+  const id = uuid()
+  const record = {
+    id,
+    ...body,
+  }
+  const data = await readData()
+  data.push(record)
+  await fs.writeFile(path.join(__dirname, 'contacts.json'), JSON.stringify(data))
+  return record
+}
+
+const updateContact = async (contactId, body) => {
+  const data = await listContacts()
+  const [result] = data.filter((contact) => contact.id === +contactId)
+  if (result) {
+    Object.assign(result, body)
+    await fs.writeFile(path.join(__dirname, 'contacts.json'), JSON.stringify(data))
+  }
+  return result
+}
 
 module.exports = {
   listContacts,
