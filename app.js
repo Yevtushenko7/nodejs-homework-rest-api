@@ -23,8 +23,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ status:'fail', code: status, message: err.message })
 })
 
-module.exports = app
-
-
-
-
+module.exports = app;
