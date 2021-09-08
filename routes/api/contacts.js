@@ -4,7 +4,6 @@ const { Contact } = require('../../model')
 const { schemaContacts } = require('../api/validation')
 
 router.get('/', async (req, res, next) => {
-
   try {
     const contacts = await Contact.find({})
     return res.json({ status: 'success', code: 200, data: { contacts } })
@@ -27,8 +26,7 @@ router.get('/:contactId', async (req, res, next) => {
  
 })
 
-router.post('/',schemaContacts, async (req, res, next) => {
-  
+router.post('/', schemaContacts, async (req, res, next) => {
   try {
     const contact = await Contact.create(req.body)
     console.log(req.body);
@@ -45,7 +43,6 @@ router.delete('/:contactId', async (req, res, next) => {
     if (contact) {
       return res.json({ status: 'success', code: 200, data: { contact } })
     }
-    
     return res.json({ status: 'error', code: 404, message:'Not found' })
   } catch (error) {
     next(error)
@@ -59,8 +56,7 @@ router.put('/:contactId',schemaContacts, async (req, res, next) => {
     const contact = await Contact.findByIdAndUpdate(req.params.contactId, req.body, {new: true})
     if (contact) {
       return res.json({ status: 'success', code: 200, data: { contact } })
-    }
-    
+    }  
     return res.json({ status: 'error', code: 404, message:'Not found' })
   } catch (error) {
     next(error)
@@ -77,11 +73,10 @@ router.patch('/:contactId/favorite', async (req, res, next) => {
     if (contact) {
       return res.json({ status: 'success', code: 200, data: { contact } })
     }
-    
     return res.json({ status: 'error', code: 404, message:'Not found' })
   } catch (error) {
      next(error)
   }
 })
 
-module.exports = router
+module.exports = router;
