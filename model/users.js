@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
+const { v4 } = require("uuid");
 
 const emailRegExp = /^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@([a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?.)*(aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$/
 
@@ -26,9 +27,17 @@ const userSchema = Schema({
     default: null,
   },
   avatarURL: {
-      type: String,
-      default: '',
-    },
+    type: String,
+    default: '',
+  },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verifyToken: {
+    type: String,
+    required: [true, 'Verify token is required'],
+  },
 },
   { versionKey: false, timestamps: true },
 );
@@ -41,12 +50,18 @@ userSchema.methods.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
+userSchema.methods.createVerifyToken = function () {
+  this.verifyToken = v4()
+}
+
 const userJoiSchema = Joi.object({
   email: Joi.string().pattern(emailRegExp).required(),
   password: Joi.string().min(6).required(),
   subscription: Joi.string().valid("starter", "pro", "business"),
   token: Joi.string(),
   avatarURL: Joi.string(),
+  verify: Joi.boolean(),
+  verifyToken: Joi.string(),
 });
 
 const User = model('user', userSchema);
