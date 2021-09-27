@@ -3,11 +3,15 @@ const logout = require('./logout');
 const signup = require('./signup');
 const current = require('./current');
 const updateAvatar = require('./updateAvatar');
+const verify = require('./verify');
+const resending = require('./resending')
 
 module.exports = {
     login,
     logout,
     signup,
     current,
-    updateAvatar
+    updateAvatar,
+    verify,
+    resending
 }

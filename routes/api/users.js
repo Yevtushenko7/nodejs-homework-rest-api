@@ -14,6 +14,10 @@ router.post('/logout', controllerWrapper(authenticate), controllerWrapper(ctrl.l
 
 router.get('/current', controllerWrapper(authenticate), controllerWrapper(ctrl.current))
 
-router.patch('/avatars', uploadAvatar.single('image'), controllerWrapper(ctrl.updateAvatar))
+router.patch('/avatars',controllerWrapper(authenticate), uploadAvatar.single('image'), controllerWrapper(ctrl.updateAvatar))
+
+router.get('/verify/:verifyToken', controllerWrapper(ctrl.verify))
+
+router.post('/verify',controllerWrapper(ctrl.resending))
 
 module.exports = router;
